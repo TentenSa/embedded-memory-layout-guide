@@ -1,0 +1,35 @@
+# Build outputs
+_out/
+build/
+dist/
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+node_modules/
+venv/
+*.pyc
+__pycache__/
+
+# Documentation build
+docs/_build/
+site/
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# System files
+Thumbs.db

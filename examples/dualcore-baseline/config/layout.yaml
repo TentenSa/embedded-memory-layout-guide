@@ -1,0 +1,16 @@
+# Synthetic example. Invented device, invented values.
+# This file is the E1 source for stack and context save area sizes.
+# A build step turns it into linker symbols (E2), for example:
+#   -Wl,--defsym=STACK_CORE0_SIZE=4096
+
+device: example-3core
+cores:
+  core0:
+    stack_bytes: 4096        # derivation: see README, section "Derivation"
+    csa_entries: 64          # 64 entries x 64 bytes = 4096 bytes
+  core1:
+    stack_bytes: 4096
+    csa_entries: 64
+  core2:
+    stack_bytes: 0           # core unused in this project
+    csa_entries: 0
