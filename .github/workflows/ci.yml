@@ -21,3 +21,12 @@ jobs:
           if python tools/check_layout.py examples/dualcore-baseline/link-output/firmware_stale.map examples/dualcore-baseline/config/layout.toml; then
             echo "stale map was accepted"; exit 1
           fi
+      - name: Migration example, old map with old declarations must pass
+        run: python tools/check_layout.py examples/migration-device-upgrade/old/firmware.map examples/migration-device-upgrade/old/layout.toml
+      - name: Migration example, new map with old declarations must fail
+        run: |
+          if python tools/check_layout.py examples/migration-device-upgrade/new/firmware.map examples/migration-device-upgrade/old/layout.toml; then
+            echo "stale declarations were accepted"; exit 1
+          fi
+      - name: Migration example, new map with new declarations must pass
+        run: python tools/check_layout.py examples/migration-device-upgrade/new/firmware.map examples/migration-device-upgrade/new/layout.toml

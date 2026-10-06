@@ -1,0 +1,26 @@
+# Synthetic example. Declarations for the old device.
+
+[check]
+region_warn_percent = 90
+
+# A structure an external tool reads at a fixed address
+[[expect]]
+section = ".shared_mailbox"
+size = 64
+addr = 0x20000000
+
+[[expect]]
+section = ".stack_core0"
+size = 4096
+
+[[expect]]
+section = ".csa_core0"
+entries = 64
+
+[[expect]]
+section = ".stack_core1"
+size = 4096
+
+[[expect]]
+section = ".csa_core1"
+entries = 64

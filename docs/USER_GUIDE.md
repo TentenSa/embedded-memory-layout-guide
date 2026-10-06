@@ -140,6 +140,8 @@ Goal: find every stale value before it finds you.
 5. Test change categories separately: regions first, then boot and core start, then stack and CSA, then calibration interfaces.
 6. Record what changed and why.
 
+A worked synthetic case, with the checker run on a half-migrated project, is in [examples/migration-device-upgrade](../examples/migration-device-upgrade).
+
 Search for leftovers by old derivative name and old addresses:
 
 ```

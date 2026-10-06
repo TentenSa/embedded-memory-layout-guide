@@ -35,7 +35,7 @@ Claims also pass through gates G0 to G7 (context, ownership, constraints, source
 
 ## The checker
 
-`tools/check_layout.py` compares what you declared against what the linker placed. It reads a GNU ld map file and a TOML file of expectations, and reports size mismatches, missing sections, overlaps, sections past the end of their region, and regions near full. Standard library only, Python 3.11 or newer.
+`tools/check_layout.py` compares what you declared against what the linker placed. It reads a GNU ld map file and a TOML file of expectations, and reports size or address mismatches, missing sections, overlaps, sections past the end of their region, and regions near full. Standard library only, Python 3.11 or newer.
 
 ```
 python tools/check_layout.py build/firmware.map layout.toml

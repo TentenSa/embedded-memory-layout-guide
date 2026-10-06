@@ -4,7 +4,7 @@
 Reads the output-section table from a map file and a TOML file that lists
 what you declared. Reports:
 
-  * declared size or entry count that differs from the placed section size
+  * declared size, entry count, or address that differs from the placed section
   * declared sections that are missing from the map
   * output sections whose address ranges overlap
   * sections that run past the end of their memory region
@@ -146,12 +146,21 @@ def check(
             else:
                 errors.append(f"{name}: declared {want} bytes, section not found in map")
             continue
+        ok = True
         if sec.size != want:
+            ok = False
             errors.append(
                 f"{name}: declared {want} (0x{want:x}) bytes, "
                 f"map places {sec.size} (0x{sec.size:x}) bytes"
             )
-        else:
+        if "addr" in entry and sec.addr != int(entry["addr"]):
+            ok = False
+            want_addr = int(entry["addr"])
+            errors.append(
+                f"{name}: declared address 0x{want_addr:x}, "
+                f"map places it at 0x{sec.addr:x}"
+            )
+        if ok:
             info.append(f"{name}: {sec.size} bytes at 0x{sec.addr:x} matches declaration")
 
     # 2. Only sections that sit inside a known region take part in layout checks

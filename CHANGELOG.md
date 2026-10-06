@@ -10,6 +10,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 - Unit tests, including a test that the stale example map must fail, and an offline check of relative markdown links
 - GitHub Actions workflow that runs the tests and the checker on the example
 
+- Optional `addr` in an expectation, to catch fixed-address structures that moved
+- Second example, `migration-device-upgrade` (Mode 3), with real GNU ld maps for an old and a new synthetic device
+
 ### Changed
 
 - Example configuration is now `layout.toml` so the checker needs no third-party package
@@ -42,8 +45,5 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 ## Roadmap
 
 ### 0.3.0
-- Second example: migration between two synthetic memory maps
-
-### 0.4.0
 - Load address (LMA) checks for flash images
 - Notes for other linkers, contributed by people who use them

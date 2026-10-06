@@ -1,0 +1,35 @@
+# Synthetic example. Declarations for the new device.
+# Changes from old/layout.toml: mailbox address, bigger stacks on cores 0 and 1,
+# and core 2 is now in use.
+
+[check]
+region_warn_percent = 90
+
+[[expect]]
+section = ".shared_mailbox"
+size = 64
+addr = 0x20008000
+
+[[expect]]
+section = ".stack_core0"
+size = 8192
+
+[[expect]]
+section = ".csa_core0"
+entries = 64
+
+[[expect]]
+section = ".stack_core1"
+size = 8192
+
+[[expect]]
+section = ".csa_core1"
+entries = 64
+
+[[expect]]
+section = ".stack_core2"
+size = 4096
+
+[[expect]]
+section = ".csa_core2"
+entries = 32

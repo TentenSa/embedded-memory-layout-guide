@@ -76,6 +76,19 @@ class CheckTests(unittest.TestCase):
         self.assertIn(".stack", errors[0])
         self.assertTrue(any(".gone" in m for m in info))
 
+    def test_declared_address_mismatch_is_error(self):
+        text = MAP_HEADER + ".mailbox       0x0000000020000100       0x40\n"
+        cfg = {"expect": [{"section": ".mailbox", "size": 64, "addr": 0x20000000}]}
+        errors, _, _ = run(text, cfg)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("declared address 0x20000000", errors[0])
+
+    def test_declared_address_match_passes(self):
+        text = MAP_HEADER + ".mailbox       0x0000000020000100       0x40\n"
+        cfg = {"expect": [{"section": ".mailbox", "size": 64, "addr": 0x20000100}]}
+        errors, _, _ = run(text, cfg)
+        self.assertEqual(errors, [])
+
     def test_overlap_is_error(self):
         text = (
             MAP_HEADER
@@ -122,6 +135,27 @@ class ExampleTests(unittest.TestCase):
     def test_bad_input_returns_2(self):
         rc = cl.main(["-q", str(EX / "does-not-exist.map"), str(EX / "config/layout.toml")])
         self.assertEqual(rc, 2)
+
+
+MIG = ROOT / "examples" / "migration-device-upgrade"
+
+
+class MigrationExampleTests(unittest.TestCase):
+    def test_old_map_with_old_config_passes(self):
+        rc = cl.main(["-q", str(MIG / "old/firmware.map"), str(MIG / "old/layout.toml")])
+        self.assertEqual(rc, 0)
+
+    def test_new_map_with_old_config_fails_on_address_and_stacks(self):
+        regions, sections = cl.parse_map((MIG / "new/firmware.map").read_text())
+        import tomllib
+        cfg = tomllib.loads((MIG / "old/layout.toml").read_text())
+        errors, _, _ = cl.check(regions, sections, cfg)
+        self.assertEqual(len(errors), 3)
+        self.assertTrue(any("declared address 0x20000000" in e for e in errors))
+
+    def test_new_map_with_new_config_passes(self):
+        rc = cl.main(["-q", str(MIG / "new/firmware.map"), str(MIG / "new/layout.toml")])
+        self.assertEqual(rc, 0)
 
 
 if __name__ == "__main__":
