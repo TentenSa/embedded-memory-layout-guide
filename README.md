@@ -2,7 +2,7 @@
 
 An evidence-based method for designing, checking, and debugging memory layouts on multi-core embedded targets, with a focus on AUTOSAR Classic projects on Infineon AURIX (TriCore) devices.
 
-Status: documentation and one synthetic example. No tool yet. See [CHANGELOG.md](CHANGELOG.md) and the roadmap there.
+Status: early. Documentation, one synthetic example, and a small map file checker. See [CHANGELOG.md](CHANGELOG.md) for what exists and what is planned.
 
 ## The problem
 
@@ -33,11 +33,23 @@ Claims also pass through gates G0 to G7 (context, ownership, constraints, source
 | 4 Decode | Linker error message | Likely causes and checks |
 | 5 Audit | Pre-release review | Gate report with gaps |
 
+## The checker
+
+`tools/check_layout.py` compares what you declared against what the linker placed. It reads a GNU ld map file and a TOML file of expectations, and reports size mismatches, missing sections, overlaps, sections past the end of their region, and regions near full. Standard library only, Python 3.11 or newer.
+
+```
+python tools/check_layout.py build/firmware.map layout.toml
+```
+
+Exit status is 0 for pass, 1 if any error, 2 for bad input. A worked example, including a map that must fail, is in [examples/dualcore-baseline](examples/dualcore-baseline).
+
+Limits: it reads output section addresses and sizes (run addresses), not load addresses, so flash usage by initialized data is not counted. It checks what the map says, which is E3. It cannot tell you what the target does at run time.
+
 ## Where to start
 
 1. [docs/QUICK_START.md](docs/QUICK_START.md), five minutes
 2. [docs/USER_GUIDE.md](docs/USER_GUIDE.md), each mode in detail
-3. [examples/dualcore-baseline](examples/dualcore-baseline), a synthetic project with a linker script and map excerpt
+3. [examples/dualcore-baseline](examples/dualcore-baseline), a synthetic project with a linker script, map excerpts, and the checker run on them
 4. [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md), common GNU ld messages and boot failure patterns
 5. [docs/GLOSSARY.md](docs/GLOSSARY.md)
 

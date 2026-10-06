@@ -2,7 +2,25 @@
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] Unreleased
+## [0.2.0] Unreleased
+
+### Added
+
+- `tools/check_layout.py`: compares declared sizes in a TOML file against a GNU ld map. Reports size mismatches, missing sections, overlaps, sections past region end, and region usage over a threshold
+- Unit tests, including a test that the stale example map must fail, and an offline check of relative markdown links
+- GitHub Actions workflow that runs the tests and the checker on the example
+
+### Changed
+
+- Example configuration is now `layout.toml` so the checker needs no third-party package
+
+### Known limitations
+
+- Run addresses only. Load addresses (flash images of initialized data) are not counted
+- Parses top-level output sections. It does not attribute sizes to input files
+- Tested against GNU ld 2.42 output and synthetic text, not against every binutils version or any TriCore toolchain map
+
+## [0.1.0]
 
 ### Included
 
@@ -12,7 +30,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 
 ### Not included yet
 
-- Any tool or script
+- Any tool or script (added in 0.2.0)
 - Validation on hardware. All examples are synthetic and unverified on a target.
 - Toolchain coverage beyond GNU ld
 
@@ -23,10 +41,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 
 ## Roadmap
 
-### 0.2.0
-- Map file parser that reports declared against placed values, overlaps, and region usage
+### 0.3.0
 - Second example: migration between two synthetic memory maps
 
-### 0.3.0
-- CI example that fails a build on declared and placed mismatch
+### 0.4.0
+- Load address (LMA) checks for flash images
 - Notes for other linkers, contributed by people who use them

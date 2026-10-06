@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Example map must pass
+        run: python tools/check_layout.py examples/dualcore-baseline/link-output/firmware.map examples/dualcore-baseline/config/layout.toml
+      - name: Stale example map must fail
+        run: |
+          if python tools/check_layout.py examples/dualcore-baseline/link-output/firmware_stale.map examples/dualcore-baseline/config/layout.toml; then
+            echo "stale map was accepted"; exit 1
+          fi

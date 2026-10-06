@@ -80,7 +80,7 @@ Each field carries a source or the word UNKNOWN.
 claim: Core0 stack is 4096 bytes
 status: CONFIRMED
 stage: E3
-source:   {file: config/layout.yaml, line: 12}
+source:   {file: config/layout.toml, line: 12}
 build:    {file: build/generated/layout.h, line: 8}
 link:     {file: build/firmware.map, excerpt: ".stack_core0 0x70001000 0x1000"}
 runtime:  null

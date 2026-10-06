@@ -34,6 +34,8 @@ Aim for E3 on every design value. Get E4 for anything involved in a failure.
 
 If E1 and E3 disagree, you have found a stale or overridden value. Stop there and investigate before sizing anything.
 
+Steps 1 to 3 can be automated for declared sizes with [`tools/check_layout.py`](../tools/check_layout.py). Put your expectations in a TOML file (see the [example](../examples/dualcore-baseline/config/layout.toml)) and run it after every link.
+
 ## Which mode
 
 | Question | Mode |

@@ -1,0 +1,26 @@
+# Synthetic example. Invented device, invented values.
+# This file is the E1 source for stack and context save area sizes.
+# A build step turns it into linker symbols (E2), for example:
+#   -Wl,--defsym=STACK_CORE0_SIZE=4096
+# tools/check_layout.py reads the same file to check the map (E3).
+
+[check]
+region_warn_percent = 90
+
+[[expect]]
+section = ".stack_core0"
+size = 4096              # derivation: see the example README
+
+[[expect]]
+section = ".csa_core0"
+entries = 64             # 64 entries x 64 bytes = 4096 bytes
+entry_bytes = 64
+
+[[expect]]
+section = ".stack_core1"
+size = 4096
+
+[[expect]]
+section = ".csa_core1"
+entries = 64
+entry_bytes = 64

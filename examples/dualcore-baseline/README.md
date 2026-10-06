@@ -5,7 +5,7 @@ An invented 3-core device where only cores 0 and 1 are used. Everything here is 
 ## Files
 
 ```
-config/layout.yaml          E1  declared stack and CSA sizes
+config/layout.toml          E1  declared stack and CSA sizes (also read by the checker)
 linker/memory.ld                regions
 linker/sections.ld          E2  consumes sizes through --defsym, places sections
 link-output/firmware.map    E3  trimmed map excerpt from a real link
@@ -44,7 +44,7 @@ Claim: core 0 stack is 4096 bytes.
 
 | Stage | Where | What you see |
 |---|---|---|
-| E1 | `config/layout.yaml`, `cores.core0.stack_bytes` | 4096 |
+| E1 | `config/layout.toml`, the `.stack_core0` entry | `size = 4096` |
 | E2 | the `--defsym` on the link command | `STACK_CORE0_SIZE=4096` |
 | E3 | `link-output/firmware.map` | `.stack_core0 0x30001000 0x1000` |
 | E4 | not captured | Would be: read SP at `main` and under worst-case load |
@@ -60,9 +60,17 @@ diff link-output/firmware.map link-output/firmware_stale.map
 ```
 
 1. Which section changed size, and by how much?
-2. Which declared value in `config/layout.yaml` does that contradict?
+2. Which declared value in `config/layout.toml` does that contradict?
 3. Which stage disagrees with which? (E1 against E3.)
 4. Why did the linker not complain?
 5. What check would catch this in CI before anyone reads a map file?
 
-Answers: core 1's stack is 0x800 in the stale map while the config says 4096. The linker has no way to know the config exists, so it placed what it was given. A post-link check that compares declared sizes to placed section sizes would fail the build.
+Answers: core 1's stack is 0x800 in the stale map while the config says 4096. The linker has no way to know the config exists, so it placed what it was given. A post-link check that compares declared sizes to placed section sizes fails the build. That is what the checker does:
+
+```
+python tools/check_layout.py link-output/firmware_stale.map config/layout.toml
+```
+
+```
+ERROR  .stack_core1: declared 4096 (0x1000) bytes, map places 2048 (0x800) bytes
+```
