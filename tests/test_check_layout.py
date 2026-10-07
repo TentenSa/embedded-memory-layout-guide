@@ -158,5 +158,56 @@ class MigrationExampleTests(unittest.TestCase):
         self.assertEqual(rc, 0)
 
 
+BF = ROOT / "examples" / "boot-failure-csa-depletion"
+
+
+def _hex_range(text, label):
+    import re
+    m = re.search(label + r"\s*:\s*(0x[0-9a-f]+)\s*-\s*(0x[0-9a-f]+)", text)
+    assert m, f"{label} not found in capture"
+    return int(m.group(1), 16), int(m.group(2), 16)
+
+
+class BootFailureExampleTests(unittest.TestCase):
+    def test_before_build_passes_the_checker(self):
+        rc = cl.main(["-q", str(BF / "before/firmware.map"), str(BF / "before/layout.toml")])
+        self.assertEqual(rc, 0)
+
+    def test_after_build_passes_the_checker(self):
+        rc = cl.main(["-q", str(BF / "after/firmware.map"), str(BF / "after/layout.toml")])
+        self.assertEqual(rc, 0)
+
+    def test_after_build_with_stale_declaration_fails(self):
+        rc = cl.main(["-q", str(BF / "after/firmware.map"), str(BF / "before/layout.toml")])
+        self.assertEqual(rc, 1)
+
+    def test_capture_matches_the_before_map(self):
+        import re
+        capture = (BF / "trap_capture.txt").read_text()
+        _, sections = cl.parse_map((BF / "before/firmware.map").read_text())
+        by = {s.name: s for s in sections}
+
+        csa_lo, csa_hi = _hex_range(capture, r"list area")
+        self.assertEqual(csa_lo, by[".csa_core0"].addr)
+        self.assertEqual(csa_hi + 1, by[".csa_core0"].end)
+
+        stk_lo, stk_hi = _hex_range(capture, r"region")
+        self.assertEqual(stk_lo, by[".stack_core0"].addr)
+        self.assertEqual(stk_hi + 1, by[".stack_core0"].end)
+
+        sp = int(re.search(r"SP at trap\s*:\s*(0x[0-9a-f]+)", capture).group(1), 16)
+        self.assertTrue(stk_lo <= sp <= stk_hi + 1, "SP must be inside the stack region (H1 ruled out)")
+
+        entries = (csa_hi + 1 - csa_lo) // 64
+        used = int(re.search(r"entries in use\s*:\s*(\d+)", capture).group(1))
+        free = int(re.search(r"entries free\s*:\s*(\d+)", capture).group(1))
+        self.assertEqual(used + free, entries)
+
+    def test_after_build_has_the_documented_entry_count(self):
+        _, sections = cl.parse_map((BF / "after/firmware.map").read_text())
+        csa = {s.name: s for s in sections}[".csa_core0"]
+        self.assertEqual(csa.size // 64, 32)
+
+
 if __name__ == "__main__":
     unittest.main()

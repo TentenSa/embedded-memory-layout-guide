@@ -1,0 +1,22 @@
+# Trimmed excerpt of a real GNU ld map. CSA_CORE0_COUNT=16 (the failing build).
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000008000000 0x0000000000080000 xr
+RAM              0x0000000020000000 0x0000000000020000 xrw
+CORE0_LOCAL      0x0000000030000000 0x0000000000004000 xrw
+CORE1_LOCAL      0x0000000030100000 0x0000000000004000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map (output sections only, trimmed)
+
+.text           0x0000000008000000       0x45
+.data           0x0000000020000000        0x4 load address 0x00000000080000c0
+.bss            0x0000000020000020      0x190 load address 0x00000000080000c4
+.csa_core0      0x0000000030000000      0x400
+.stack_core0    0x0000000030000400     0x1000
+.core0_data     0x0000000030001400      0x4b0
+.csa_core1      0x0000000030100000      0x400
+.stack_core1    0x0000000030100400     0x1000
+.core1_data     0x0000000030101400      0x190

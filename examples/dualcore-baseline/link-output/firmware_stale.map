@@ -1,4 +1,4 @@
-# Same build, but core1 stack was passed as 2048 while config/layout.yaml still says 4096.
+# Same build, but core1 stack was passed as 2048 while config/layout.toml still says 4096.
 # Used for the exercise in the README.
 
 Memory Configuration

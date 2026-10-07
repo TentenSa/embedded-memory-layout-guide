@@ -30,3 +30,12 @@ jobs:
           fi
       - name: Migration example, new map with new declarations must pass
         run: python tools/check_layout.py examples/migration-device-upgrade/new/firmware.map examples/migration-device-upgrade/new/layout.toml
+      - name: Boot failure example, before and after builds must pass
+        run: |
+          python tools/check_layout.py examples/boot-failure-csa-depletion/before/firmware.map examples/boot-failure-csa-depletion/before/layout.toml
+          python tools/check_layout.py examples/boot-failure-csa-depletion/after/firmware.map examples/boot-failure-csa-depletion/after/layout.toml
+      - name: Boot failure example, after build with stale declaration must fail
+        run: |
+          if python tools/check_layout.py examples/boot-failure-csa-depletion/after/firmware.map examples/boot-failure-csa-depletion/before/layout.toml; then
+            echo "stale declaration was accepted"; exit 1
+          fi

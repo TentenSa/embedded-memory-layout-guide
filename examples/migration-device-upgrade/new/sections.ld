@@ -1,7 +1,7 @@
 /* Synthetic example. New device. Invented addresses.
  *
  * STACK_CORE0_SIZE, STACK_CORE1_SIZE, CSA_CORE0_COUNT and CSA_CORE1_COUNT
- * come from config/layout.yaml through --defsym (the E2 step).
+ * come from layout.toml through --defsym (the E2 step).
  * CORE2 symbols are new on this device.
  * There are no default values on purpose. If the build does not supply
  * a symbol, ld stops with "undefined symbol ... referenced in expression"

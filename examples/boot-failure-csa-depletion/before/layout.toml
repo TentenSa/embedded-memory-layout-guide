@@ -1,0 +1,13 @@
+# Synthetic example. Declarations for the before build.
+
+[check]
+region_warn_percent = 90
+
+[[expect]]
+section = ".stack_core0"
+size = 4096
+
+[[expect]]
+section = ".csa_core0"
+entries = 16
+entry_bytes = 64

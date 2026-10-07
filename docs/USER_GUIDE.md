@@ -121,6 +121,8 @@ Illustrative case: a calibration tool cannot switch pages after a bootloader upd
 
 Evidence from a typical outcome: the map file places the structure at one address, one descriptor file has the new address and another still has the old one. Root cause: two descriptor files, one updated. Fix: update the second file, then rebuild and retest.
 
+A worked synthetic case, where the checker passes and the cause is a derivation with no margin, is in [examples/boot-failure-csa-depletion](../examples/boot-failure-csa-depletion).
+
 ### 5. Apply the smallest fix, then retest
 
 Change one thing. If the symptom remains, change the next. Do not bundle fixes: you will not know which one worked.

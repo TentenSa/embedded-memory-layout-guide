@@ -13,6 +13,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 - Optional `addr` in an expectation, to catch fixed-address structures that moved
 - Second example, `migration-device-upgrade` (Mode 3), with real GNU ld maps for an old and a new synthetic device
 
+- Third example, `boot-failure-csa-depletion` (Mode 2): a context list depletion trap with a synthetic debugger capture, five hypotheses, and real GNU ld maps for the failing and fixed builds. A test ties the capture to the map
+
 ### Changed
 
 - Example configuration is now `layout.toml` so the checker needs no third-party package

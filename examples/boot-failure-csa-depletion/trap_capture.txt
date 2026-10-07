@@ -1,0 +1,39 @@
+Synthetic debugger capture. Invented device, invented addresses.
+Build: "before" (16 CSA entries on core 0, see before/firmware.map)
+Condition: boot complete, three interrupt priority levels active, a fourth arriving
+
+Trap
+  core           : 0
+  class          : context management
+  name           : free context list depletion
+  PC             : 0x08000a1c  (symbol: drv_spi_flush_tx + 0x14)
+  trigger        : entry of interrupt level 4 (the new SPI handler) needed 2 entries
+
+Context list (decoded by the debugger from FCX and LCX)
+  list area      : 0x30000000 - 0x300003ff   (16 entries x 64 bytes)
+  FCX -> entry   : 13  (0x30000340)
+  LCX -> entry   : 13  (0x30000340)
+  FCX == LCX     : yes
+  entries in use : 14 (entries 0..13 are linked on the used chain)
+  entries free   : 2  (entries 14, 15, held back for trap handling)
+
+Used chain, newest first
+  6 entries  three nested interrupts, levels 1 to 3 (timer, CAN, ADC),
+             2 entries each (upper and lower context saved per interrupt entry)
+  8 entries  call chain
+    main
+      app_init
+        app_start_services
+          svc_log_flush
+            drv_flash_write_block
+              drv_flash_prepare
+                drv_spi_transfer
+                  drv_spi_flush_tx      <- interrupted here by level 4
+
+Stack, core 0
+  region         : 0x30000400 - 0x300013ff   (4096 bytes)
+  SP at trap     : 0x30000d80
+  bytes in use   : 0x30001400 - 0x30000d80 = 0x680 = 1664 bytes (40 percent)
+
+Checked free list: every link word on the used chain points inside
+0x30000000 - 0x300003ff. No entry outside the area.
